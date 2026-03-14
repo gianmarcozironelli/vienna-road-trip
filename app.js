@@ -74,6 +74,7 @@ let pendingInsertIndex = null;
 let addModeArmed = false;
 let didInitialFit = false;
 let confirmResolver = null;
+let lastMapPlacementAt = 0;
 
 init();
 
@@ -227,6 +228,24 @@ function initMap() {
   }).addTo(map);
 
   map.on("click", handleMapTap);
+  map.getContainer().addEventListener("click", (event) => {
+    if (!addModeArmed) return;
+    if (event.target.closest(".leaflet-marker-icon")) return;
+    placeStopAtLatLng(map.mouseEventToLatLng(event));
+  });
+  map.getContainer().addEventListener(
+    "touchend",
+    (event) => {
+      if (!addModeArmed) return;
+      if (event.target.closest(".leaflet-marker-icon")) return;
+      const touch = event.changedTouches?.[0];
+      if (!touch) return;
+      const rect = map.getContainer().getBoundingClientRect();
+      const point = L.point(touch.clientX - rect.left, touch.clientY - rect.top);
+      placeStopAtLatLng(map.containerPointToLatLng(point));
+    },
+    { passive: true }
+  );
 }
 
 function bindUI() {
@@ -394,14 +413,25 @@ function toggleAddMode() {
   mapStatus.textContent = addModeArmed
     ? "Tocca un punto sulla mappa per posizionare la nuova tappa."
     : "Tocca marker o card timeline per vedere i dettagli.";
-  if (addModeArmed) closeAllSheets();
+  if (addModeArmed) {
+    closeAllSheets({ keepStatus: true, preserveAddMode: true });
+    showToast("Modalita' inserimento attiva: tocca la mappa.");
+  }
 }
 
 function handleMapTap(event) {
   if (!addModeArmed) return;
+  placeStopAtLatLng(event.latlng);
+}
+
+function placeStopAtLatLng(latlng) {
+  if (!addModeArmed || !latlng) return;
+  const now = Date.now();
+  if (now - lastMapPlacementAt < 250) return;
+  lastMapPlacementAt = now;
   addModeArmed = false;
   addStopBtn.classList.remove("is-armed");
-  openFormSheet({ mode: "add", latlng: event.latlng, source: "map" });
+  openFormSheet({ mode: "add", latlng, source: "map" });
 }
 
 function handleFormSubmit(event) {
@@ -729,7 +759,7 @@ function openSheet(sheet) {
   refreshOverlayState();
 }
 
-function closeAllSheets() {
+function closeAllSheets(options = {}) {
   stopSheet.classList.remove("open");
   stopSheet.setAttribute("aria-hidden", "true");
   formSheet.classList.remove("open");
@@ -737,11 +767,18 @@ function closeAllSheets() {
   legendSheet.classList.remove("open");
   legendSheet.setAttribute("aria-hidden", "true");
 
+  if (!options.preserveAddMode) {
+    addModeArmed = false;
+    addStopBtn.classList.remove("is-armed");
+  }
+
   editingStopId = null;
   pendingLatLng = null;
   pendingInsertIndex = null;
   stopForm.reset();
-  mapStatus.textContent = "Tocca marker o card timeline per vedere i dettagli.";
+  if (!options.keepStatus) {
+    mapStatus.textContent = "Tocca marker o card timeline per vedere i dettagli.";
+  }
   refreshOverlayState();
 }
 
