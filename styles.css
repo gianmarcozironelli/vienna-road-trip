@@ -45,7 +45,7 @@ body {
   border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: var(--shadow-soft);
-  background-image: url("foto-principale.jpeg");
+  background-image: url("foto-principale.jpeg?v=2");
   background-size: cover;
   background-position: center;
 }
@@ -55,11 +55,12 @@ body {
   inset: 0;
   background: linear-gradient(
     165deg,
-    rgba(18, 30, 59, 0.68) 0%,
-    rgba(33, 66, 89, 0.4) 35%,
-    rgba(231, 119, 75, 0.4) 78%,
-    rgba(255, 196, 149, 0.62) 100%
+    rgba(18, 30, 59, 0.2) 0%,
+    rgba(33, 66, 89, 0.08) 35%,
+    rgba(231, 119, 75, 0.1) 78%,
+    rgba(255, 196, 149, 0.2) 100%
   );
+  pointer-events: none;
 }
 
 .hero-inner {
