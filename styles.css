@@ -41,13 +41,15 @@ body {
 .hero {
   position: relative;
   width: 100%;
-  min-height: 52vh;
+  min-height: clamp(560px, 78vh, 860px);
   border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: var(--shadow-soft);
-  background-image: url("foto-principale.jpeg?v=2");
-  background-size: cover;
-  background-position: center;
+  background-color: #d3c7bb;
+  background-image: url("foto-principale.jpeg?v=3");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center top;
 }
 
 .hero-gradient {
@@ -66,7 +68,7 @@ body {
 .hero-inner {
   position: relative;
   z-index: 1;
-  min-height: 52vh;
+  min-height: clamp(560px, 78vh, 860px);
   padding: 18px 18px 24px;
   display: flex;
   flex-direction: column;
@@ -781,7 +783,7 @@ textarea:focus {
 
   .hero,
   .hero-inner {
-    min-height: 58vh;
+    min-height: clamp(620px, 84vh, 980px);
   }
   .toast-stack {
     left: auto;
