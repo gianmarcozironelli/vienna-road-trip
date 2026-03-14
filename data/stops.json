@@ -1,0 +1,74 @@
+[
+  {
+    "id": "start-stephansplatz",
+    "title": "Partenza a Stephansplatz",
+    "note": "Primo caffè, due foto veloci e via: il viaggio comincia nel cuore di Vienna.",
+    "category": "bar",
+    "links": [
+      {
+        "label": "Google Maps",
+        "url": "https://maps.google.com/?q=Stephansplatz+Vienna"
+      },
+      {
+        "label": "Bar vicini",
+        "url": "https://www.google.com/maps/search/cafe+Stephansplatz+Vienna/"
+      }
+    ],
+    "lat": 48.2084,
+    "lng": 16.3731
+  },
+  {
+    "id": "coffee-hidden-yard",
+    "title": "Cortile Segreto",
+    "note": "Piccolo bar nascosto in un cortile: pausa perfetta tra una tappa e l'altra.",
+    "category": "cakes",
+    "links": [
+      {
+        "label": "Ispirazione Instagram",
+        "url": "https://www.instagram.com/explore/tags/viennacafe/"
+      },
+      {
+        "label": "Mappa caffè",
+        "url": "https://www.google.com/maps/search/coffee+vienna/"
+      }
+    ],
+    "lat": 48.2037,
+    "lng": 16.3685
+  },
+  {
+    "id": "belvedere-sunset",
+    "title": "Belvedere al Tramonto",
+    "note": "Passeggiata al tramonto nei giardini: luce dorata e panorama aperto sulla città.",
+    "category": "viewpoint",
+    "links": [
+      {
+        "label": "Mappa Belvedere",
+        "url": "https://maps.google.com/?q=Belvedere+Vienna"
+      },
+      {
+        "label": "Punti tramonto",
+        "url": "https://www.google.com/maps/search/vienna+sunset+viewpoints/"
+      }
+    ],
+    "lat": 48.1913,
+    "lng": 16.3801
+  },
+  {
+    "id": "prater-finale",
+    "title": "Finale al Prater",
+    "note": "Luci, musica e ultimo brindisi: chiusura perfetta del road trip.",
+    "category": "restaurant",
+    "links": [
+      {
+        "label": "Mappa Prater",
+        "url": "https://maps.google.com/?q=Prater+Vienna"
+      },
+      {
+        "label": "Attività nei dintorni",
+        "url": "https://www.google.com/maps/search/things+to+do+around+prater+vienna/"
+      }
+    ],
+    "lat": 48.2167,
+    "lng": 16.3959
+  }
+]

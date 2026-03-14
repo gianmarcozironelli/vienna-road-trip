@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vienna Road Trip</title>
+    <meta
+      name="description"
+      content="Mini esperienza interattiva mobile-first per un road trip a Vienna."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Nunito:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <div class="hero-gradient"></div>
+        <div class="hero-inner">
+          <p class="hero-badge">Road Trip</p>
+          <h1>Vienna Road Trip</h1>
+          <p class="hero-subtitle">3 giorni. Una strada. Momenti inaspettati.</p>
+          <a
+            class="spotify-btn"
+            href="https://open.spotify.com/playlist/3aDwtOxLvqSjrEVLenWUTg?si=UMosfO4GRpW6rfa2GFBNrw&pt=5ca0c8100c1923b78c7246e723f77dfa&pi=uhKMQ7mxQ_6Hn"
+            target="_blank"
+            rel="noopener"
+          >
+            Apri playlist Spotify del viaggio
+          </a>
+        </div>
+      </section>
+
+      <section class="map-section">
+        <div class="section-heading">
+          <p class="section-label">Mappa</p>
+          <button id="addStopBtn" class="pill-btn" type="button">+ Aggiungi tappa</button>
+        </div>
+        <aside id="guideCard" class="guide-card" aria-live="polite">
+          <div>
+            <p class="guide-title">Guida rapida</p>
+            <p class="guide-text">Tocca “+ Aggiungi tappa”, scegli il punto in mappa o dalla timeline, poi trascina le card per riordinare.</p>
+          </div>
+          <button id="dismissGuideBtn" class="guide-dismiss" type="button" aria-label="Chiudi guida">
+            ×
+          </button>
+        </aside>
+        <p id="mapStatus" class="map-status">
+          Tocca un marker per aprire la scheda tappa.
+        </p>
+        <div class="legend-block">
+          <div class="section-heading section-heading-static">
+            <p class="section-label">Legenda</p>
+            <button id="editLegendBtn" class="ghost-btn" type="button">Modifica legenda</button>
+          </div>
+          <div id="legendList" class="legend-list" aria-live="polite"></div>
+          <p class="legend-note">🟠 collegata al percorso · ⚪ spot (solo punto)</p>
+        </div>
+        <div id="map" class="map-canvas" aria-label="Mappa del road trip"></div>
+      </section>
+
+      <section class="timeline-section">
+        <div class="section-heading section-heading-static">
+          <p class="section-label">Timeline</p>
+          <button id="addFromTimelineBtn" class="ghost-btn" type="button">+ Aggiungi qui</button>
+        </div>
+        <h2>Diario Avventura</h2>
+        <p class="timeline-tip">Trascina la maniglia su ogni card per riordinare il percorso.</p>
+        <div id="timeline" class="timeline-list" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <div id="backdrop" class="backdrop" hidden></div>
+
+    <section
+      id="stopSheet"
+      class="sheet"
+      aria-hidden="true"
+      aria-labelledby="stopSheetTitle"
+    >
+      <button class="sheet-close" id="closeStopSheet" type="button" aria-label="Chiudi dettagli tappa">
+        ×
+      </button>
+      <div class="sheet-handle"></div>
+      <h3 id="stopSheetTitle"></h3>
+      <p id="stopNote"></p>
+      <div id="stopIconPanel" class="sheet-icon-panel"></div>
+      <div id="stopLinks" class="sheet-links"></div>
+      <div class="sheet-actions">
+        <button id="editStopBtn" class="ghost-btn" type="button">Modifica</button>
+        <button id="removeStopBtn" class="danger-btn" type="button">Rimuovi</button>
+      </div>
+    </section>
+
+    <section id="formSheet" class="sheet" aria-hidden="true" aria-labelledby="formSheetTitle">
+      <button class="sheet-close" id="closeFormSheet" type="button" aria-label="Chiudi form">
+        ×
+      </button>
+      <div class="sheet-handle"></div>
+      <h3 id="formSheetTitle">Aggiungi tappa</h3>
+      <p id="coordPreview" class="coord-preview"></p>
+      <form id="stopForm">
+        <label class="field-label" for="titleInput">Titolo tappa</label>
+        <input id="titleInput" name="title" type="text" required maxlength="80" />
+
+        <label class="field-label" for="noteInput">Descrizione</label>
+        <textarea id="noteInput" name="note" rows="3" required maxlength="220"></textarea>
+
+        <label class="field-label" for="categoryInput">Tipo tappa</label>
+        <select id="categoryInput" name="category"></select>
+
+        <label class="field-check">
+          <input id="includeRouteInput" name="includeRoute" type="checkbox" checked />
+          <span>Collega questa tappa al percorso</span>
+        </label>
+
+        <label class="field-label" for="linksInput">Link utili (opzionale, una riga: Etichetta | URL)</label>
+        <textarea id="linksInput" name="links" rows="3" placeholder="Instagram | https://..."></textarea>
+
+        <div class="form-actions">
+          <button id="cancelFormBtn" class="ghost-btn" type="button">Annulla</button>
+          <button class="pill-btn" type="submit">Salva tappa</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="legendSheet" class="sheet" aria-hidden="true" aria-labelledby="legendSheetTitle">
+      <button class="sheet-close" id="closeLegendSheet" type="button" aria-label="Chiudi editor legenda">
+        ×
+      </button>
+      <div class="sheet-handle"></div>
+      <h3 id="legendSheetTitle">Modifica legenda</h3>
+      <p class="coord-preview">Personalizza emoji e nome delle categorie.</p>
+      <form id="legendForm">
+        <div id="legendRows" class="legend-rows"></div>
+        <div class="legend-editor-actions">
+          <button id="addLegendRowBtn" class="ghost-btn" type="button">+ Nuova categoria</button>
+        </div>
+        <div class="form-actions">
+          <button id="cancelLegendBtn" class="ghost-btn" type="button">Annulla</button>
+          <button class="pill-btn" type="submit">Salva legenda</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="confirmModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="confirmTitle">
+      <h3 id="confirmTitle">Rimuovere la tappa?</h3>
+      <p id="confirmMessage"></p>
+      <div class="modal-actions">
+        <button id="confirmCancelBtn" class="ghost-btn" type="button">Annulla</button>
+        <button id="confirmOkBtn" class="danger-btn" type="button">Rimuovi</button>
+      </div>
+    </section>
+
+    <div id="toastStack" class="toast-stack" aria-live="polite" aria-atomic="false"></div>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
